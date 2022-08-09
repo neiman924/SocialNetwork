@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-const thoughtSchema = require('./Thoughts');
+const thoughtsSchema = require('./Thoughts');
 
 // Schema to create user model
 const userSchema = new Schema(
@@ -14,7 +14,12 @@ const userSchema = new Schema(
       required: true,
       max_length: 50,
     },
-    thoughts: [thoughtSchema],
+    email: {
+      type: String,
+      required: false,
+      max_length: 50,
+    },
+    //comments: [thoughtsSchema],
   },
   {
     toJSON: {

@@ -1,5 +1,6 @@
 //const mongoose = require ('mongoose');
 // const Schema = mongoose.Schema;
+const usersSchema = require('./Users');
 
 const { Schema, model } = require('mongoose');
 
@@ -7,12 +8,19 @@ const thoughtSchema = new Schema(
   {
     thoughtName: {
       type: String,
+      required: true,
+      max_length: 50,
     },
     createDate: {
       type: Date,
       default: Date.now(),
     },
-    users: [
+    username: {
+      type: String,
+      required: true,
+      max_length: 50,
+    },
+    user: [
       {
         type: Schema.Types.ObjectId,
         ref: 'users',
@@ -23,7 +31,7 @@ const thoughtSchema = new Schema(
     toJSON: {
       virtuals: true,
     },
-    id: false,
+    // id: false,
   }
 );
 

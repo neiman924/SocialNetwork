@@ -15,32 +15,39 @@ connection.once('open', async () => {
 
   // Create empty array to hold the students
   const users = [];
-  const thoughts = getRandomThoughts(20);
+  const thoughts = [];
   // Loop 20 times -- add users to the users array
   for (let i = 0; i < 20; i++) {
     // Get some random assignment objects using a helper function that we imported from ./data
+    const thought = getRandomThoughts(); 
+    //const comments = getRandomComments(20);
 
     const fullName = getRandomUser();
     const first = fullName.split(' ')[0];
     const last = fullName.split(' ')[1];
-
+    const email = 'test1@test.com';
     users.push({
       first,
       last,
+      email,
+    });
+    thoughts.push({
+      thought,
+      fullName,
     });
   }
 
+  console.log(users,thoughts);
   // Add students to the collection and await the results
   await Users.collection.insertMany(users);
 
-  // Add courses to the collection and await the results
-  await Thoughts.collection.insertMany({
-    thoughtName: thoughts,
-    users: [...users],
-  });
+  // Add Thoughts to the collection and await the results
+  await Thoughts.collection.insertMany(thoughts,users);
 
   // Log out the seed data to indicate what should appear in the database
   console.table(users);
+  console.table(thoughts);
+
   console.info('Seeding complete! 🌱');
   process.exit(0);
 });

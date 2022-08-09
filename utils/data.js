@@ -103,14 +103,17 @@ const getRandomUser = () =>
   `${getRandomArrItem(users)} ${getRandomArrItem(users)}`;
 
 // Function to generate random assignments that we can add to student object.
-const getRandomThoughts = (int) => {
+const getRandomComments = (int) => {
   const results = [];
   for (let i = 0; i < int; i++) {
     results.push({
-      thoughtName: getRandomArrItem(appThoughts)});
+      comments: getRandomComments(appThoughts)});
   }
   return results;
 };
+
+const getRandomThoughts = () =>
+  `${getRandomArrItem(appThoughts)}`;
 
 // Export the functions for use in seed.js
 module.exports = { getRandomUser, getRandomThoughts };

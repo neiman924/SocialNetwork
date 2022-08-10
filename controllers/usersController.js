@@ -1,4 +1,4 @@
-// ObjectId() method for converting userID string into an ObjectId for querying database
+// ObjectId() method for converting UserId string into an ObjectId for querying database
 const { ObjectId } = require('mongoose').Types;
 const { Users, Thoughts } = require('../models');
 
@@ -8,16 +8,16 @@ const headCount = async () =>
     .then((numberOfUsers) => numberOfUsers);
 
 // Execute the aggregate method on the user model and calculate the overall grade by using the $avg operator
-const grade = async (userId) =>
+const grade = async (UserId) =>
   Users.aggregate([
     // only include the given user by using $match
-    { $match: { _id: ObjectId(userId) } },
+    { $match: { _id: ObjectId(UserId) } },
     {
       $unwind: '$thoughts',
     },
     {
       $group: {
-        _id: ObjectId(userId),
+        _id: ObjectId(UserId),
         overallGrade: { $avg: '$thoughts.score' },
       },
     },
@@ -41,7 +41,8 @@ module.exports = {
   },
   // Get a single user
   getSingleUser(req, res) {
-    Users.findOne({ _id: req.params.userId })
+    console.log('thiiiiiiiiiiiiiiiis: ' , req.params);
+    Users.findOne({ _id: req.params.UserId })
       .select('-__v')
       .lean()
       .then(async (user) =>
@@ -49,7 +50,7 @@ module.exports = {
           ? res.status(404).json({ message: 'No user with that ID' })
           : res.json({
               user,
-              grade: await grade(req.params.userId),
+              grade: await grade(req.params.UserId),
             })
       )
       .catch((err) => {
@@ -65,13 +66,13 @@ module.exports = {
   },
   // Delete a user and remove them from the Thoughts
   deleteUser(req, res) {
-    Users.findOneAndRemove({ _id: req.params.userId })
+    Users.findOneAndRemove({ _id: req.params.UserId })
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No such user exists' })
           : Thoughts.findOneAndUpdate(
-              { users: req.params.userId },
-              { $pull: { users: req.params.userId } },
+              { users: req.params.UserId },
+              { $pull: { users: req.params.UserId } },
               { new: true }
             )
       )
@@ -93,7 +94,7 @@ module.exports = {
     console.log('You are adding a thought');
     console.log(req.body);
     Users.findOneAndUpdate(
-      { _id: req.params.userId },
+      { _id: req.params.UserId },
       { $addToSet: { thoughts: req.body } },
       { runValidators: true, new: true }
     )
@@ -109,7 +110,7 @@ module.exports = {
   // Remove thoughts from a user
   removeThought(req, res) {
     Users.findOneAndUpdate(
-      { _id: req.params.userId },
+      { _id: req.params.UserId },
       { $pull: { thoughts: { thoughtId: req.params.thoughtId } } },
       { runValidators: true, new: true }
     )
